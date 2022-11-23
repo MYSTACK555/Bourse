@@ -1,0 +1,348 @@
+<html>
+    <head>
+        <title>Bourse - The game of uncertainty</title>
+        <link rel="stylesheet" href="main.css" type="text/css" />
+        <script type="text/javascript" src="Winwheel.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
+    </head>
+    <body>
+        <div align="center">
+            <h1>Bourse - The game of uncertainty</h1>
+            <br />
+            <table cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td id="select_player">
+                    <span>Select the number of player 2-10</span>
+                    <input type="number" name="player_count" value=2 max=10 min=2 id="player_count"  onclick="changeNumberPlayers()">
+                    <br /><br />
+                    &nbsp;&nbsp;<a href="#" onClick="create_wheel(); return false;">confirm</a>
+                </td>
+                <td id="power_spin" style="display: none;">
+                    <div class="power_controls">
+                        <br />
+                        <br />
+                        <table class="power" cellpadding="10" cellspacing="0">
+                            <tr>
+                                <th align="center">Power</th>
+                            </tr>
+                            <tr>
+                                <td width="78" align="center" id="pw3" onClick="powerSelected(3);">High</td>
+                            </tr>
+                            <tr>
+                                <td align="center" id="pw2" onClick="powerSelected(2);">Med</td>
+                            </tr>
+                            <tr>
+                                <td align="center" id="pw1" onClick="powerSelected(1);">Low</td>
+                            </tr>
+                        </table>
+                        <br />
+                        <img id="spin_button_object" src="spin_off.png" alt="Spin" onClick="startSpinObject();" />
+                        <br />
+                        <img id="spin_button_action" src="spin_off.png" alt="Spin" onClick="startSpinAction();" />
+                    </div>
+                </td>
+                <td  id="object_wheel_id" width="438" height="582" class="the_wheel" align="center" valign="center" style="display: none;">
+                    <canvas id="canvas-object" width="434" height="434" >
+                        <p style="{color: white}" align="center">Sorry, your browser doesn't support canvas. Please try another.</p>
+                    </canvas>
+                </td>
+                <td  id="action_wheel_id" width="438" height="582" class="the_wheel" align="center" valign="center" style="display: none;">
+                    <canvas id="canvas-action" width="434" height="434" >
+                        <p style="{color: white}" align="center">Sorry, your browser doesn't support canvas. Please try another.</p>
+                    </canvas>
+                </td>
+            </tr>
+        </table>
+        <script>
+            var number_of_players = 2;
+            let object_wheel;
+            let action_wheel;
+            function changeNumberPlayers() {
+                number_of_players = parseInt(document.getElementById("player_count").value);
+                console.log(number_of_players);
+            }
+
+            function create_wheel()
+            {
+                document.getElementById("object_wheel_id").style.display = "table-cell";
+                document.getElementById("action_wheel_id").style.display = "table-cell";
+                document.getElementById("power_spin").style.display = "table-cell";
+                document.getElementById("select_player").style.display = "none";
+                let objects= [                               
+                    {'fillStyle' : '#3cb878', 'text' : 'bnq1'},
+                    {'fillStyle' : '#3cb878', 'text' : 'bnq2'},
+                    {'fillStyle' : '#3cb878', 'text' : 'p11'},
+                    {'fillStyle' : '#3cb878', 'text' : 'p12'},
+                    {'fillStyle' : '#3cb878', 'text' : 'p21'},
+                    {'fillStyle' : '#3cb878', 'text' : 'p22'},
+                    {'fillStyle' : '#3cb878', 'text' : 'p31'},
+                    {'fillStyle' : '#3cb878', 'text' : 'p32'},
+                    {'fillStyle' : '#3cb878', 'text' : 'p41'},
+                    {'fillStyle' : '#3cb878', 'text' : 'p42'},
+                    {'fillStyle' : '#3cb878', 'text' : 'p51'},
+                    {'fillStyle' : '#3cb878', 'text' : 'p52'},
+                    {'fillStyle' : '#3cb878', 'text' : 'p61'},
+                    {'fillStyle' : '#3cb878', 'text' : 'p62'},
+                    {'fillStyle' : '#3cb878', 'text' : 'p71'},
+                    {'fillStyle' : '#3cb878', 'text' : 'p72'},
+                    {'fillStyle' : '#3cb878', 'text' : 'p81'},
+                    {'fillStyle' : '#3cb878', 'text' : 'p82'},
+                    {'fillStyle' : '#3cb878', 'text' : 'p91'},
+                    {'fillStyle' : '#3cb878', 'text' : 'p92'},
+                    {'fillStyle' : '#3cb878', 'text' : 'p101'},
+                    {'fillStyle' : '#3cb878', 'text' : 'p102'},
+                ];
+                let actions = [                               
+                    {'fillStyle' : '#3cb878', 'text' : '+1'},
+                    {'fillStyle' : '#3cb878', 'text' : '+1'},
+                    {'fillStyle' : '#3cb878', 'text' : '+5'},
+                    {'fillStyle' : '#3cb878', 'text' : '+5'},
+                    {'fillStyle' : '#3cb878', 'text' : '+10'},
+                    {'fillStyle' : '#3cb878', 'text' : '+10'},
+                    {'fillStyle' : '#3cb878', 'text' : '+50'},
+                    {'fillStyle' : '#3cb878', 'text' : '+50'},
+                    {'fillStyle' : '#3cb878', 'text' : '+100'},
+                    {'fillStyle' : '#3cb878', 'text' : '+100'},
+                    {'fillStyle' : '#3cb878', 'text' : '-1'},
+                    {'fillStyle' : '#3cb878', 'text' : '-1'},
+                    {'fillStyle' : '#3cb878', 'text' : '-5'},
+                    {'fillStyle' : '#3cb878', 'text' : '-5'},
+                    {'fillStyle' : '#3cb878', 'text' : '-10'},
+                    {'fillStyle' : '#3cb878', 'text' : '-10'},
+                    {'fillStyle' : '#3cb878', 'text' : '-50'},
+                    {'fillStyle' : '#3cb878', 'text' : '-50'},
+                    {'fillStyle' : '#3cb878', 'text' : '-100'},
+                    {'fillStyle' : '#3cb878', 'text' : '-100'},
+                    {'fillStyle' : '#3cb878', 'text' : 'x2'},
+                    {'fillStyle' : '#3cb878', 'text' : 'x5'},
+                    {'fillStyle' : '#3cb878', 'text' : 'x10'},
+                    {'fillStyle' : '#3cb878', 'text' : '1$'},
+                    {'fillStyle' : '#3cb878', 'text' : '5$'},
+                    {'fillStyle' : '#3cb878', 'text' : '10$'},
+                    {'fillStyle' : '#3cb878', 'text' : '100$'},
+
+                ];
+                actions = actions.map(value => ({ value, sort: Math.random() }))
+                            .sort((a, b) => a.sort - b.sort)
+                            .map(({ value }) => value)
+                objects = objects.map(value => ({ value, sort: Math.random() }))
+                            .sort((a, b) => a.sort - b.sort)
+                            .map(({ value }) => value)
+                let object_selected = objects.slice(0, (number_of_players+1)*2);
+    
+                // Create new wheel object specifying the parameters at creation time.
+                object_wheel = new Winwheel({
+                    'canvasId'          : 'canvas-object',
+                    'outerRadius'     : 212,        // Set outer radius so wheel fits inside the background.
+                    'innerRadius'     : 75,         // Make wheel hollow so segments don't go all way to center.
+                    'textFontSize'    : 24,         // Set default font size for the segments.
+                    'textOrientation' : 'vertical', // Make text vertial so goes down from the outside of wheel.
+                    'textAlignment'   : 'outer',    // Align text to outside of wheel.
+                    'numSegments'     : object_selected.length,         // Specify number of segments.
+                    'segments'        : object_selected,            // Define segments including colour and text.
+                    'animation' :           // Specify the animation to use.
+                    {
+                        'type'     : 'spinToStop',
+                        'duration' : 10,    // Duration in seconds.
+                        'spins'    : 3,     // Default number of complete spins.
+                        'callbackFinished' : alertPrize,
+                        'callbackSound'    : playSound,   // Function to call when the tick sound is to be triggered.
+                        'soundTrigger'     : 'pin'        // Specify pins are to trigger the sound, the other option is 'segment'.
+                    },
+                    'pins' :				// Turn pins on.
+                    {
+                        'number'     : object_selected.length,
+                        'fillStyle'  : 'silver',
+                        'outerRadius': 4,
+                    }
+                });
+
+                action_wheel= new Winwheel({
+                    'canvasId'          : 'canvas-action',
+                    'outerRadius'     : 212,        // Set outer radius so wheel fits inside the background.
+                    'innerRadius'     : 75,         // Make wheel hollow so segments don't go all way to center.
+                    'textFontSize'    : 24,         // Set default font size for the segments.
+                    'textOrientation' : 'vertical', // Make text vertial so goes down from the outside of wheel.
+                    'textAlignment'   : 'outer',    // Align text to outside of wheel.
+                    'numSegments'     : actions.length,         // Specify number of segments.
+                    'segments'        : actions,            // Define segments including colour and text.
+                    'animation' :           // Specify the animation to use.
+                    {
+                        'type'     : 'spinToStop',
+                        'duration' : 10,    // Duration in seconds.
+                        'spins'    : 3,     // Default number of complete spins.
+                        'callbackFinished' : alertPrize,
+                        'callbackSound'    : playSound,   // Function to call when the tick sound is to be triggered.
+                        'soundTrigger'     : 'pin'        // Specify pins are to trigger the sound, the other option is 'segment'.
+                    },
+                    'pins' :				// Turn pins on.
+                    {
+                        'number'     : actions.length,
+                        'fillStyle'  : 'silver',
+                        'outerRadius': 4,
+                    }
+                });
+
+            }
+
+            // Loads the tick audio sound in to an audio object.
+            let audio = new Audio('tick.mp3');
+
+            // This function is called when the sound is to be played.
+            function playSound()
+            {
+                // Stop and rewind the sound if it already happens to be playing.
+                audio.pause();
+                audio.currentTime = 0;
+
+                // Play the sound.
+                audio.play();
+            }
+
+            // Vars used by the code in this page to do power controls.
+            let wheelPower    = 0;
+            let wheelSpinning_action = false;
+            let wheelSpinning_object = false;
+
+            // -------------------------------------------------------
+            // Function to handle the onClick on the power buttons.
+            // -------------------------------------------------------
+            function powerSelected(powerLevel)
+            {
+                // Ensure that power can't be changed while wheel is spinning.
+                if (wheelSpinning_action == false && wheelSpinning_object == false) {
+                    // Reset all to grey incase this is not the first time the user has selected the power.
+                    document.getElementById('pw1').className = "";
+                    document.getElementById('pw2').className = "";
+                    document.getElementById('pw3').className = "";
+
+                    // Now light up all cells below-and-including the one selected by changing the class.
+                    if (powerLevel >= 1) {
+                        document.getElementById('pw1').className = "pw1";
+                    }
+
+                    if (powerLevel >= 2) {
+                        document.getElementById('pw2').className = "pw2";
+                    }
+
+                    if (powerLevel >= 3) {
+                        document.getElementById('pw3').className = "pw3";
+                    }
+
+                    // Set wheelPower var used when spin button is clicked.
+                    wheelPower = powerLevel;
+
+                    // Light up the spin button by changing it's source image and adding a clickable class to it.
+                    document.getElementById('spin_button_object').src = "spin_on.png";
+                    document.getElementById('spin_button_action').src = "spin_on.png";
+                    document.getElementById('spin_button_object').className = "clickable";
+                    document.getElementById('spin_button_action').className = "clickable";
+                }
+            }
+
+            // -------------------------------------------------------
+            // Click handler for spin button.
+            // -------------------------------------------------------
+            function startSpinObject()
+            {
+                // Ensure that spinning can't be clicked again while already running.
+                if (wheelSpinning_object == false && startSpinObject.caller.arguments[0].currentTarget.className == "clickable") {
+                    // Based on the power level selected adjust the number of spins for the wheel, the more times is has
+                    // to rotate with the duration of the animation the quicker the wheel spins.
+                    if (wheelPower == 1) {
+                        object_wheel.animation.spins = 3;
+                    } else if (wheelPower == 2) {
+                        object_wheel.animation.spins = 6;
+                    } else if (wheelPower == 3) {
+                        object_wheel.animation.spins = 10;
+                    }
+
+                    // Disable the spin button so can't click again while wheel is spinning.
+                    document.getElementById('spin_button_object').src       = "spin_off.png";
+                    document.getElementById('spin_button_object').className = "";
+
+                    // Begin the spin animation by calling startAnimation on the wheel object.
+                    object_wheel.startAnimation();
+
+                    // Set to true so that power can't be changed and spin button re-enabled during
+                    // the current animation. The user will have to reset before spinning again.
+                    wheelSpinning_object = true;
+                }
+            }
+            // -------------------------------------------------------
+            // Click handler for spin button.
+            // -------------------------------------------------------
+            function startSpinAction()
+            {
+                // Ensure that spinning can't be clicked again while already running.
+                if (wheelSpinning_action == false && startSpinAction.caller.arguments[0].currentTarget.className == "clickable") {
+                    // Based on the power level selected adjust the number of spins for the wheel, the more times is has
+                    // to rotate with the duration of the animation the quicker the wheel spins.
+                    if (wheelPower == 1) {
+                        action_wheel.animation.spins = 3;
+                    } else if (wheelPower == 2) {
+                        action_wheel.animation.spins = 6;
+                    } else if (wheelPower == 3) {
+                        action_wheel.animation.spins = 10;
+                    }
+
+                    // Disable the spin button so can't click again while wheel is spinning.
+                    document.getElementById('spin_button_action').src       = "spin_off.png";
+                    document.getElementById('spin_button_action').className = "";
+
+                    // Begin the spin animation by calling startAnimation on the wheel object.
+                    action_wheel.startAnimation();
+
+                    // Set to true so that power can't be changed and spin button re-enabled during
+                    // the current animation. The user will have to reset before spinning again.
+                    wheelSpinning_action = true;
+                }
+            }
+
+            // -------------------------------------------------------
+            // Function for reset button.
+            // -------------------------------------------------------
+            function resetWheel()
+            {
+                object_wheel.stopAnimation(false);  // Stop the animation, false as param so does not call callback function.
+                object_wheel.rotationAngle = 0;     // Re-set the wheel angle to 0 degrees.
+                object_wheel.draw();                // Call draw to render changes to the wheel.
+
+                document.getElementById('pw1').className = "";  // Remove all colours from the power level indicators.
+                document.getElementById('pw2').className = "";
+                document.getElementById('pw3').className = "";
+
+                wheelSpinning = false;          // Reset to false to power buttons and spin can be clicked again.
+            }
+
+
+            let both_wheels = 0;
+            // -------------------------------------------------------
+            // Called when the spin animation has finished by the callback feature of the wheel because I specified callback in the parameters.
+            // -------------------------------------------------------
+            function alertPrize(indicatedSegment, wheel)
+            {
+                both_wheels++;
+                if (both_wheels %2 == 0 ){
+                    document.getElementById('spin_button_object').src = "spin_on.png";
+                    document.getElementById('spin_button_action').src = "spin_on.png";
+                    document.getElementById('spin_button_object').className = "clickable";
+                    document.getElementById('spin_button_action').className = "clickable";    
+                }
+
+                if (wheel.canvasId == "canvas-object"){
+                    wheelSpinning_object=false
+                    alert("L'item est: " + indicatedSegment.text);
+                }
+                else
+                {
+                    wheelSpinning_action=false
+                    alert("Le prix varie de " + indicatedSegment.text);
+                }
+                wheel.stopAnimation(false);
+                wheel.rotationAngle=0;
+                wheel.draw();
+            }
+        </script>
+    </body>
+</html>
