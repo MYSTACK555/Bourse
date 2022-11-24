@@ -13,7 +13,7 @@
             <tr>
                 <td id="select_player">
                     <span>Select the number of player 2-10</span>
-                    <input type="number" name="player_count" value=2 max=10 min=2 id="player_count"  onclick="changeNumberPlayers()">
+                    <input type="number" name="player_count" value=2 max=10 min=2 id="player_count"  onchange="changeNumberPlayers()">
                     <br /><br />
                     &nbsp;&nbsp;<a href="#" onClick="create_wheel(); return false;">confirm</a>
                 </td>
@@ -54,11 +54,21 @@
             </tr>
         </table>
         <script>
+            const max_number_players = 10;
+            const min_number_players = 2;
             var number_of_players = 2;
             let object_wheel;
             let action_wheel;
             function changeNumberPlayers() {
                 number_of_players = parseInt(document.getElementById("player_count").value);
+                if (number_of_players > max_number_players) {
+                    number_of_players = max_number_players;
+                    document.getElementById("player_count").value = max_number_players;
+                }
+                if (number_of_players < min_number_players) {
+                    number_of_players = min_number_players;
+                    document.getElementById("player_count").value = min_number_players;
+                }
                 console.log(number_of_players);
             }
 
