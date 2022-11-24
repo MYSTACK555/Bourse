@@ -1857,7 +1857,7 @@ Winwheel.prototype.computeAnimation = function()
             }
 
             // The property value is the spins * 360 then plus or minus the stopAngle depending on if the rotation is clockwise or anti-clockwise.
-            this.animation.propertyValue = (this.animation.spins * 360);
+            this.animation.propertyValue = (this.animation.spins * 360)+this.rotationAngle;
 
             if (this.animation.direction == 'anti-clockwise') {
                 this.animation.propertyValue = (0 - this.animation.propertyValue);
